@@ -12,7 +12,7 @@ function ScatterplotContainer({xAttributeName, yAttributeName}){
 
     // every time the component re-render
     useEffect(()=>{
-        console.log("ScatterplotContainer useEffect (called each time matrix re-renders)");
+        //console.log("ScatterplotContainer useEffect (called each time matrix re-renders)");
     }); // if no second parameter, useEffect is called at each re-render
 
     const divContainerRef=useRef(null);
@@ -49,9 +49,10 @@ function ScatterplotContainer({xAttributeName, yAttributeName}){
 
     // did update, called each time dependencies change, dispatch remain stable over component cycles
     useEffect(()=>{
-        console.log("ScatterplotContainer useEffect with dependency [scatterplotData, xAttribute, yAttribute, scatterplotControllerMethods], called each time scatterplotData changes...");
+        //console.log("ScatterplotContainer useEffect with dependency [scatterplotData, xAttribute, yAttribute, scatterplotControllerMethods], called each time scatterplotData changes...");
 
         const handleOnClick = function(itemData){
+            console.log("User clicked on circle:", itemData);
         }
         const handleOnMouseEnter = function(itemData){
         }
@@ -62,6 +63,17 @@ function ScatterplotContainer({xAttributeName, yAttributeName}){
             handleOnClick,
             handleOnMouseEnter,
             handleOnMouseLeave
+        }
+
+        if(scatterplotD3Ref.current && visData && visData.length >0){
+            //console.log("ScatterplotContainer: Manager giving data to D3 Worker...");
+
+        scatterplotD3Ref.current.renderScatterplot(
+            visData, 
+            xAttributeName,
+            yAttributeName,
+            controllerMethods
+        );
         }
 
         // get the current instance of scatterplotD3 from the Ref...

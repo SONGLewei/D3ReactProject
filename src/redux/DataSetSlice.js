@@ -6,8 +6,13 @@ export const getDataSet = createAsyncThunk('communities/fetchData', async (args,
   try{
     const response = await fetch('data/communities.csv');
     const responseText = await response.text();
-    console.log("loaded file length:" + responseText.length);
-    const responseJson = Papa.parse(responseText,{header:true, dynamicTyping:true});
+    //console.log("loaded file length:" + responseText.length);
+    // translate CSV to JSON
+    const responseJson = Papa.parse(responseText,{
+      header:true, 
+      dynamicTyping:true,
+      skipEmptyLines:true
+    });
 
     // you can also dispatch any other reducer
     // thunkAPI.dispatch(reducerAction(params))
@@ -26,6 +31,7 @@ export const dataSetSlice = createSlice({
   reducers: {
       // add reducer if needed
   },
+  // listen the state of thunk
   extraReducers: builder => {
     builder.addCase(getDataSet.pending, (state, action) => {
       console.log("extraReducer getDataSet.pending");

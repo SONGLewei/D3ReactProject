@@ -20,7 +20,11 @@ class ScatterplotD3 {
     };
 
     create = function (config) {
-        this.size = {width: config.size.width, height: config.size.height};
+        const safeWidth = config.size.width > 0 ? config.size.width : 800;
+        const safeHeight = config.size.height > 0 ? config.size.height : 500;
+
+        this.size = {width: safeWidth, height: safeHeight};
+        //this.size = {width: config.size.width, height: config.size.height};
 
         // get the effect size of the view by subtracting the margin
         this.width = this.size.width - this.margin.left - this.margin.right;
@@ -63,7 +67,18 @@ class ScatterplotD3 {
             .transition().duration(this.transitionDuration)
             .attr("transform", (item)=>{
                 // use scales to return shape position from data values
-                // return "translate(,)"
+                if(item[xAttribute] === undefined || item[yAttribute] === undefined){
+                    return "translate(0,0)"
+                }
+
+                const xPixel = this.xScale(item[xAttribute]);
+                const yPixel = this.yScale(item[yAttribute]);
+
+                if (isNaN(xPixel) || isNaN(yPixel)) {
+                    return `translate(0, 0)`;
+                }
+
+                return `translate(${xPixel},${yPixel})`;
             })
         ;
         this.changeBorderAndOpacity(selection, false)
@@ -77,22 +92,35 @@ class ScatterplotD3 {
 
     updateAxis = function(visData,xAttribute,yAttribute){
         // compute min max using d3.min/max(visData.map(item=>item.attribute))
-        // this.xScale.domain(...);
-        // this.yScale.domain(...);
+        const xExtent = d3.extent(visData, item => item[xAttribute]);
+        const yExtent = d3.extent(visData, item => item[yAttribute]);
+
+        this.xScale.domain(xExtent);
+        this.yScale.domain([0,yExtent[1]]);
+
+        const xAxis = d3.axisBottom(this.xScale);
+        const yAxis = d3.axisLeft(this.yScale);
+
+        this.svg.select(".xAxisG").transition().duration(this.transitionDuration).call(xAxis);
+        this.svg.select(".yAxisG").transition().duration(this.transitionDuration).call(yAxis);
 
         // create axis with computed scales
     }
 
 
     renderScatterplot = function (visData, xAttribute, yAttribute, controllerMethods){
-        console.log("render scatterplot with a new data list ...")
+        //console.log("render scatterplot with a new data list ...")
+        const cleanData = visData.filter(item => {
+            return item[xAttribute] !== undefined && item[xAttribute] !== "?" && item[xAttribute] !== null &&
+                   item[yAttribute] !== undefined && item[yAttribute] !== "?" && item[yAttribute] !== null;
+        });
 
         // build the size scales and x,y axis
-        this.updateAxis(visData,xAttribute,yAttribute);
+        this.updateAxis(cleanData,xAttribute,yAttribute);
 
         this.svg.selectAll(".markerG")
             // all elements with the class .cellG (empty the first time)
-            .data(visData,(itemData)=>itemData.index)
+            .data(cleanData,(itemData)=>itemData.index)
             .join(
                 enter=>{
                     // all data items to add:
