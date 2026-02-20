@@ -16,7 +16,7 @@ function App() {
   useEffect(()=>{
       //console.log("App useEffect (called each time App re-renders)");
       dispatch(getDataSet());
-  }); // if no second parameter, useEffect is called at each re-render
+  },[]); // if no second parameter, useEffect is called at each re-render
 
   useEffect(()=>{
     //console.log("App : change in cangku ->", data);
@@ -30,6 +30,8 @@ function App() {
             <ScatterplotContainer 
               xAttributeName="medIncome"
               yAttributeName="ViolentCrimesPerPop"
+              rAttributeName="MedRentPctHousInc"
+              colorAttributeName="PctEmplProfServ"
             />
           
         </div>

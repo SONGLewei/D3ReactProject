@@ -6,7 +6,7 @@ import ScatterplotD3 from './Scatterplot-d3';
 
 // TODO: import action methods from reducers
 
-function ScatterplotContainer({xAttributeName, yAttributeName}){
+function ScatterplotContainer({xAttributeName, yAttributeName,rAttributeName,colorAttributeName}){
     const visData = useSelector(state =>state.dataSet)
     const dispatch = useDispatch();
 
@@ -72,13 +72,15 @@ function ScatterplotContainer({xAttributeName, yAttributeName}){
             visData, 
             xAttributeName,
             yAttributeName,
+            rAttributeName,
+            colorAttributeName,
             controllerMethods
         );
         }
 
         // get the current instance of scatterplotD3 from the Ref...
         // call renderScatterplot of ScatterplotD3...;
-    },[visData,dispatch]);// if dependencies, useEffect is called after each data update, in our case only visData changes.
+    },[visData,dispatch,xAttributeName, yAttributeName, rAttributeName,colorAttributeName]);// if dependencies, useEffect is called after each data update, in our case only visData changes.
 
     return(
         <div ref={divContainerRef} className="scatterplotDivContainer col2">
