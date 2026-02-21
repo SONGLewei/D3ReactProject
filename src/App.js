@@ -3,6 +3,7 @@ import './App.css';
 import { useEffect} from 'react';
 import { getDataSet } from './redux/DataSetSlice';
 import ScatterplotContainer from './components/scatterplot/ScatterplotContainer';
+import HierarchyContainer from './components/hierarchy/HierarchyContainer';
 
 // here import other dependencies
 
@@ -16,7 +17,7 @@ function App() {
   useEffect(()=>{
       //console.log("App useEffect (called each time App re-renders)");
       dispatch(getDataSet());
-  },[]); // if no second parameter, useEffect is called at each re-render
+  },[dispatch]); // if no second parameter, useEffect is called at each re-render
 
   useEffect(()=>{
     //console.log("App : change in cangku ->", data);
@@ -24,8 +25,8 @@ function App() {
 
   return (
     <div className="App">
+      <h1>Crime Data Dashboard</h1>
         <div id={"MultiviewContainer"} className={"row"}>
-          <h1>Crime Data Dashboard</h1>
 
             <ScatterplotContainer 
               xAttributeName="medIncome"
@@ -33,6 +34,8 @@ function App() {
               rAttributeName="MedRentPctHousInc"
               colorAttributeName="PctEmplProfServ"
             />
+
+            <HierarchyContainer />
           
         </div>
     </div>

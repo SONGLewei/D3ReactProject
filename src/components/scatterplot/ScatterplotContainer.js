@@ -5,6 +5,7 @@ import {useSelector, useDispatch} from 'react-redux'
 import ScatterplotD3 from './Scatterplot-d3';
 
 // TODO: import action methods from reducers
+import { updateSelectedIds } from '../../redux/SelectionSlice';
 
 function ScatterplotContainer({xAttributeName, yAttributeName,rAttributeName,colorAttributeName}){
     const visData = useSelector(state =>state.dataSet)
@@ -62,8 +63,10 @@ function ScatterplotContainer({xAttributeName, yAttributeName,rAttributeName,col
         }
 
         const handleOnBrush = function(selectIds){
-            console.log("CITIES IDs", selectIds);
+            //console.log("CITIES IDs", selectIds);
             scatterplotD3Ref.current.highlightSelectedItems(selectIds);
+
+            dispatch(updateSelectedIds(selectIds));
         }
 
         const controllerMethods={

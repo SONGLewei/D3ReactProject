@@ -6,7 +6,7 @@ export const getDataSet = createAsyncThunk('communities/fetchData', async (args,
   try{
     const response = await fetch('data/communities.csv');
     const responseText = await response.text();
-    //console.log("loaded file length:" + responseText.length);
+    
     // translate CSV to JSON
     const responseJson = Papa.parse(responseText,{
       header:true, 

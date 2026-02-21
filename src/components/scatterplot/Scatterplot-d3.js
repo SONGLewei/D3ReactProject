@@ -2,7 +2,7 @@ import * as d3 from 'd3'
 // import { getDefaultFontSize } from '../../utils/helper';
 
 class ScatterplotD3 {
-    margin = {top: 100, right: 10, bottom: 50, left: 100};
+    margin = {top: 40, right: 10, bottom: 50, left: 100};
     size;
     height;
     width;
@@ -224,19 +224,21 @@ class ScatterplotD3 {
 
     renderScatterplot = function (visData, xAttribute, yAttribute, rAttribute,colorAttribute, controllerMethods){
         //console.log("render scatterplot with a new data list ...")
-        const cleanData = visData.filter(item => {
+
+        // To avoid ? and null but do not need in this scatterplot
+        /*const cleanData = visData.filter(item => {
             return item[xAttribute] !== undefined && item[xAttribute] !== "?" && item[xAttribute] !== null &&
                    item[yAttribute] !== undefined && item[yAttribute] !== "?" && item[yAttribute] !== null &&
                    item[rAttribute] !== undefined && item[rAttribute] !== "?" && item[rAttribute] !== null &&
                    item[colorAttribute] != null && item[colorAttribute] !== "?";
-        });
+        });*/
 
         // build the size scales and x,y axis
-        this.updateAxis(cleanData,xAttribute,yAttribute,rAttribute,colorAttribute);
+        this.updateAxis(visData,xAttribute,yAttribute,rAttribute,colorAttribute);
 
         this.svg.selectAll(".markerG")
             // all elements with the class .cellG (empty the first time)
-            .data(cleanData,(itemData)=>itemData.index)
+            .data(visData,(itemData)=>itemData.index)
             .join(
                 enter=>{
                     // all data items to add:
@@ -293,7 +295,7 @@ class ScatterplotD3 {
                 // user chose excatement a frame
                 const [[x0,y0],[x1,y1]] = event.selection;
 
-                const selectedItems = cleanData.filter(item=>{
+                const selectedItems = visData.filter(item=>{
                     const cx = this.xScale(Number(item[xAttribute]));
                     const cy = this.yScale(Number(item[yAttribute]));
 
