@@ -59,10 +59,15 @@ function ScatterplotContainer({xAttributeName, yAttributeName,rAttributeName,col
         const handleOnMouseLeave = function(){
         }
 
+        const handleOnBrush = function(selectIds){
+            console.log("CITIES IDs", selectIds);
+        }
+
         const controllerMethods={
             handleOnClick,
             handleOnMouseEnter,
-            handleOnMouseLeave
+            handleOnMouseLeave,
+            handleOnBrush
         }
 
         if(scatterplotD3Ref.current && visData && visData.length >0){

@@ -138,6 +138,8 @@ class ScatterplotD3 {
             .attr("transform", "rotate(-90)")
             .attr("x", -(this.height / 2))
             .attr("y", -40);
+
+        this.brushGroup = this.svg.append("g").attr("class","brushG");
     }
 
     changeBorderAndOpacity(selection, selected){
@@ -261,8 +263,45 @@ class ScatterplotD3 {
                     exit.remove()
                     ;
                 }
+            );
 
-            )
+        // -----------brush---------
+        const brush = d3.brush()
+            .extent([[0,0], [this.width, this.height]])
+            .on("end", (event)=>{
+                // click and release
+                if (!event.selection) {
+                    if (controllerMethods.handleOnBrush) {
+                        controllerMethods.handleOnBrush([]);
+                    }
+                    return;
+                }
+
+                // user chose excatement a frame
+                const [[x0,y0],[x1,y1]] = event.selection;
+
+                const selectedItems = cleanData.filter(item=>{
+                    const cx = this.xScale(Number(item[xAttribute]));
+                    const cy = this.yScale(Number(item[yAttribute]));
+
+                    return cx>=x0 && cx<=x1 && cy>= y0 && cy <= y1;
+                });
+
+                const selectedIds = selectedItems.map(d=>d.index);
+                console.log(`${selectedIds.length} CITIES SELECTED`);
+
+                controllerMethods.handleOnBrush(selectedIds);
+
+            });
+        this.brushGroup.call(brush);
+
+        this.brushGroup.raise();
+
+        // double click for desactive the frame
+        this.brushGroup.on("dblclick",()=>{
+            this.brushGroup.call(brush.move,null);
+        });
+        //----------------
     }
 
     clear = function(){
