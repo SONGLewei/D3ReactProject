@@ -53,6 +53,8 @@ function ScatterplotContainer({xAttributeName, yAttributeName,rAttributeName,col
 
         const handleOnClick = function(itemData){
             console.log("User clicked on circle:", itemData);
+
+            //scatterplotD3Ref.current.highlightSelectedItems([itemData.index]);
         }
         const handleOnMouseEnter = function(itemData){
         }
@@ -61,6 +63,7 @@ function ScatterplotContainer({xAttributeName, yAttributeName,rAttributeName,col
 
         const handleOnBrush = function(selectIds){
             console.log("CITIES IDs", selectIds);
+            scatterplotD3Ref.current.highlightSelectedItems(selectIds);
         }
 
         const controllerMethods={

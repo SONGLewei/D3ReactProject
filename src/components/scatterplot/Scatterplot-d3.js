@@ -147,7 +147,9 @@ class ScatterplotD3 {
         ;
 
         selection.select(".markerCircle")
-            .attr("stroke-width",selected?2:0)
+            .attr("stroke-width",selected?0.65:0.2)
+            .attr("stroke", selected ? "black" : "green")
+            .style("opacity", 1);
         ;
     }
 
@@ -176,9 +178,20 @@ class ScatterplotD3 {
     }
 
     highlightSelectedItems(selectedItems){
+
+        const allMakers = this.svg.selectAll(".markerG");
         // use pattern update to change the border and opacity of objects:
         //      - call this.changeBorderAndOpacity(selection,true) for objects in selectedItems
+        const seletedNodes = allMakers.filter(itemData => selectedItems.includes(itemData.index));
+        this.changeBorderAndOpacity(seletedNodes,true);
+
         //      - this.changeBorderAndOpacity(selection,false) for objects not in selectedItems
+        const unSelectedNodes = allMakers.filter(itemData=>!selectedItems.includes(itemData.index));
+        this.changeBorderAndOpacity(unSelectedNodes,false);
+        
+        // raissssse
+        seletedNodes.raise();
+        //this.brushGroup.raise();
     }
 
     updateAxis = function(visData,xAttribute,yAttribute,rAttribute,colorAttribute){
@@ -246,7 +259,7 @@ class ScatterplotD3 {
                         .attr("r", d => this.rScale(Number(d[rAttribute])))
                         .attr("fill", d => this.colorScale(Number(d[colorAttribute])))
                         .attr("stroke","green")
-                        .attr("stroke-width", 0.2)
+                        .attr("stroke-width", 0.1)
                         .style("opacity", 0.85);
                     ;
                     return itemG;
@@ -268,7 +281,7 @@ class ScatterplotD3 {
         // -----------brush---------
         const brush = d3.brush()
             .extent([[0,0], [this.width, this.height]])
-            .on("end", (event)=>{
+            .on("brush end", (event)=>{
                 // click and release
                 if (!event.selection) {
                     if (controllerMethods.handleOnBrush) {
@@ -288,7 +301,7 @@ class ScatterplotD3 {
                 });
 
                 const selectedIds = selectedItems.map(d=>d.index);
-                console.log(`${selectedIds.length} CITIES SELECTED`);
+                //console.log(`${selectedIds.length} CITIES SELECTED`);
 
                 controllerMethods.handleOnBrush(selectedIds);
 
