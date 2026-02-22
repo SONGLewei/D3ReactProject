@@ -47,7 +47,7 @@ class HierarchyD3 {
             .style("pointer-events", "none");
     }
 
-    renderHierarchy = function (visData) {
+    renderHierarchy = function (visData,controllerMethods) {
 
         const cleanData = visData.filter(d => d.state != null && d.communityname != null);
 
@@ -88,7 +88,9 @@ class HierarchyD3 {
             .attr("fill", d => d.children ? color(d.depth) : "#ecf0f3")
             .on("mouseover", (event, d) => {
                 d3.select(event.currentTarget).attr("stroke", "#000").attr("stroke-width", 1.5);
-                
+                if (controllerMethods && controllerMethods.handleOnMouseEnter) {
+                    controllerMethods.handleOnMouseEnter(d.data);
+                }
                 if (!d.children && this.focus !== d) {
                     this.tooltipTimeout = setTimeout(() => {
                         this.tooltip.transition().duration(200).style("opacity", 1);
@@ -115,6 +117,10 @@ class HierarchyD3 {
                 d3.select(event.currentTarget)
                     .attr("stroke", isSelected ? "#d62728" : null)
                     .attr("stroke-width", isSelected ? 1.5 : 0);
+
+                if (controllerMethods && controllerMethods.handleOnMouseLeave) {
+                    controllerMethods.handleOnMouseLeave();
+                }
             })
             .on("click", (event, d) => {
                 // avoid zoom in progress

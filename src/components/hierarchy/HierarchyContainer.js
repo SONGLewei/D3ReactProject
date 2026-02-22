@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import HierarchyD3 from './Hierarchy-d3';
 import './Hierarchy.css';
@@ -45,8 +45,43 @@ function HierarchyContainer() {
         }
     }, [selectedIds]);
 
+    // play with useState
+    const [hoveredCity, setHoveredCity] = useState("Hover over a circle...");
+
+    useEffect(()=>{
+        const handleOnMouseEnter = function(nodeData){
+            if (nodeData.communityname) {
+                setHoveredCity(`City: ${nodeData.communityname}, ${nodeData.state}`);
+            }
+            else if (nodeData.name) {
+                setHoveredCity(`State: ${nodeData.name}`);
+            }
+        };
+
+        const handleOnMouseLeave = function() {
+            setHoveredCity("Hover over a circle...");
+        };
+
+        const controllerMethods = {
+            handleOnMouseEnter,
+            handleOnMouseLeave
+        };
+
+        if (d3Ref.current && visData && visData.length > 0) {
+            d3Ref.current.renderHierarchy(visData, controllerMethods);
+        }
+    },[visData]);
+
     return (
-        <div ref={divContainerRef} className="hierarchyDivContainer col2">
+        <div className="hierarchyDivContainer col2">
+            <div className="hover-tooltip">
+                {hoveredCity}
+            </div>
+
+            <div ref={divContainerRef} className="hierarchyDivContainer">
+                
+            </div>
+            
         </div>
     );
 }
