@@ -25,7 +25,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Crime Data Dashboard</h1>
+      <h1>US cities : Where to Settle Down ?</h1>
         <div id={"MultiviewContainer"} className={"row"}>
 
             <ScatterplotContainer 

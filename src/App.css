@@ -19,6 +19,7 @@ h1 {
     flex-direction: row;
     flex: 1;
     width: 100%;
+    overflow: hidden;
 }
 
 .col2 {
