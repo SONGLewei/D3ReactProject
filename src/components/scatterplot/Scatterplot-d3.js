@@ -2,7 +2,7 @@ import * as d3 from 'd3'
 // import { getDefaultFontSize } from '../../utils/helper';
 
 class ScatterplotD3 {
-    margin = {top: 40, right: 10, bottom: 50, left: 100};
+    margin = {top: 40, right: 20, bottom: 50, left: 100};
     size;
     height;
     width;
@@ -26,10 +26,15 @@ class ScatterplotD3 {
         this.width = this.size.width - this.margin.left - this.margin.right;
         this.height = this.size.height - this.margin.top - this.margin.bottom;
 
+        const fullWidth = this.size.width;
+        const fullHeight = this.size.height;
+
         // initialize the svg and keep it in a class property to reuse it in renderScatterplot()
         this.svg=d3.select(this.el).append("svg")
-            .attr("width", this.width + this.margin.left + this.margin.right)
-            .attr("height", this.height + this.margin.top + this.margin.bottom)
+            .attr("width", "100%")
+            .attr("height", "100%")
+            .attr("viewBox", `0 0 ${fullWidth} ${fullHeight}`)
+            .attr("preserveAspectRatio", "xMidYMid meet")
             .append("g")
             .attr("class","svgG")
             .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
@@ -246,11 +251,12 @@ class ScatterplotD3 {
                     const itemG=enter.append("g")
                         .attr("class","markerG")
                         .style("opacity",this.defaultOpacity)
-                        .attr("transform", item => {
+                        .attr("transform", "translate(0,0)")
+                        /*.attr("transform", item => {
                             const xPixel = this.xScale(Number(item[xAttribute]));
                             const yPixel = this.yScale(Number(item[yAttribute]));
                             return isNaN(xPixel) || isNaN(yPixel) ? "translate(-100,-100)" : `translate(${xPixel},${yPixel})`;
-                        })
+                        })*/
                         .on("click", (event,itemData)=>{
                             controllerMethods.handleOnClick(itemData);
                         })
@@ -264,6 +270,9 @@ class ScatterplotD3 {
                         .attr("stroke-width", 0.1)
                         .style("opacity", 0.85);
                     ;
+
+                    this.updateMarkers(itemG, xAttribute, yAttribute);
+
                     return itemG;
                 },
                 update=>{
